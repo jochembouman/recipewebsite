@@ -1,0 +1,63 @@
+/*
+ * Print styles. Mark anything that makes no sense on paper with `data-print-hidden`.
+ */
+
+@media print {
+  :root {
+    --color-bg: #fff;
+    --color-surface: #fff;
+    --color-surface-muted: #fff;
+    --color-text: #000;
+    --color-text-muted: #333;
+    --color-heading: #000;
+    --color-link: #000;
+    --color-tag-bg: #fff;
+    --color-tag-text: #000;
+    --color-notice-bg: #fff;
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --text-3xl: 1.75rem;
+    --text-2xl: 1.25rem;
+    --text-xl: 1.125rem;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
+
+  [data-print-hidden] {
+    display: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* Show where external links go. */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  li,
+  figure,
+  [data-print-keep] {
+    break-inside: avoid;
+  }
+
+  img {
+    max-height: 8cm;
+    width: auto;
+  }
+}

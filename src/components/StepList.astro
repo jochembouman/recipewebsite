@@ -1,0 +1,61 @@
+---
+/** Styles the numbered steps written in the Markdown body of a recipe. */
+interface Props {
+  lang?: string;
+}
+
+const { lang } = Astro.props;
+---
+
+<div class="step-list" lang={lang}>
+  <slot />
+</div>
+
+<style>
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .step-list :global(ol) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .step-list :global(ol > li) {
+    position: relative;
+    padding-inline-start: calc(var(--tap-target) + var(--space-sm));
+    counter-increment: step;
+  }
+
+  .step-list :global(ol > li)::before {
+    content: counter(step);
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: var(--tap-target);
+    height: var(--tap-target);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-muted);
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .step-list :global(p + p) {
+    margin-top: var(--space-sm);
+  }
+
+  .step-list :global(h2),
+  .step-list :global(h3) {
+    margin-top: var(--space-md);
+    font-size: var(--text-lg);
+  }
+</style>

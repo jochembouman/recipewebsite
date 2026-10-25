@@ -1,0 +1,169 @@
+{
+  "site": {
+    "name": "ja recipes",
+    "description": "Our collection of favourite recipes: from quick weeknight dishes to elaborate dinners."
+  },
+  "nav": {
+    "label": "Main menu",
+    "open": "Open menu",
+    "close": "Close menu",
+    "home": "Home",
+    "menuHeading": "Menu",
+    "about": "About us",
+    "skipToContent": "Skip to content"
+  },
+  "language": {
+    "label": "Language",
+    "switchTo": "View this page in English",
+    "short": "EN",
+    "nl": "Dutch",
+    "en": "English"
+  },
+  "courses": {
+    "starter": "Starters",
+    "main": "Mains",
+    "dessert": "Dessert",
+    "side-salad": "Sides & salads",
+    "preserves-dips": "Preserves & dips",
+    "breakfast-lunch": "Breakfast & lunch",
+    "all": "All"
+  },
+  "course": {
+    "allTitle": "All recipes",
+    "description": "{course}: all recipes in this category.",
+    "empty": "There are no recipes in this category yet.",
+    "count": "{count} recipes",
+    "countOne": "1 recipe"
+  },
+  "home": {
+    "title": "Recipes",
+    "intro": "Dishes we keep coming back to.",
+    "latest": "Latest recipes",
+    "viewAll": "View all recipes",
+    "aboutHeading": "About us",
+    "aboutLink": "Read more about us"
+  },
+  "search": {
+    "label": "Search for a recipe",
+    "placeholder": "Search by title…",
+    "resultsHeading": "Search results",
+    "resultsCount": "{count} recipes found",
+    "resultsCountOne": "1 recipe found",
+    "noResults": "No recipes found. Try another word."
+  },
+  "recipe": {
+    "ingredients": "Ingredients",
+    "equipment": "Equipment",
+    "steps": "Method",
+    "note": "Note",
+    "source": "Inspiration",
+    "ratings": "Ratings",
+    "servings": "Servings",
+    "servingsFor": {
+      "persons": "Serves {count}",
+      "personsOne": "Serves 1",
+      "portions": "{count} portions",
+      "portionsOne": "1 portion",
+      "pieces": "Makes {count} pieces",
+      "piecesOne": "Makes 1 piece",
+      "bowls": "{count} bowls",
+      "bowlsOne": "1 bowl",
+      "jars": "{count} jars",
+      "jarsOne": "1 jar",
+      "loaves": "{count} loaves",
+      "loavesOne": "1 loaf",
+      "scoops": "{count} scoops",
+      "scoopsOne": "1 scoop",
+      "skewers": "{count} skewers",
+      "skewersOne": "1 skewer"
+    },
+    "decreaseServings": "Fewer servings",
+    "increaseServings": "More servings",
+    "prepTime": "Prep time",
+    "cookTime": "Cook time",
+    "print": "Print recipe",
+    "backToCourse": "Back to {course}",
+    "draft": "Draft",
+    "draftNotice": "Draft: this recipe is only visible during development (npm run dev) and is not on the live site.",
+    "fallbackNotice": "This recipe hasn't been translated yet. You're viewing the {language} version.",
+    "fallbackLanguage": {
+      "nl": "Dutch",
+      "en": "English"
+    },
+    "inLanguage": {
+      "nl": "Dutch",
+      "en": "English"
+    },
+    "metaDescription": "Recipe for {title}."
+  },
+  "time": {
+    "minutes": "{minutes} min",
+    "hours": "{hours} h",
+    "hoursMinutes": "{hours} h {minutes} min"
+  },
+  "ratings": {
+    "easeOfCooking": "Ease of cooking",
+    "tokoFactor": "Toko factor",
+    "jochem": "Tasty (Jochem)",
+    "anna": "Tasty (Anna)",
+    "value": "{value} out of 5"
+  },
+  "tags": {
+    "groups": {
+      "course": "Course",
+      "diet": "Diet",
+      "protein": "Protein",
+      "occasion": "Occasion",
+      "country": "Country"
+    },
+    "diet": {
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "pescatarian": "Pescatarian",
+      "gluten-free": "Gluten-free",
+      "dairy-free": "Dairy-free"
+    },
+    "protein": {
+      "chicken": "Chicken",
+      "beef": "Beef",
+      "pork": "Pork",
+      "lamb": "Lamb",
+      "duck": "Duck",
+      "fish": "Fish",
+      "seafood": "Seafood",
+      "tofu": "Tofu",
+      "tempeh": "Tempeh",
+      "seitan": "Seitan",
+      "egg": "Egg",
+      "legumes": "Legumes",
+      "cheese": "Cheese",
+      "nuts": "Nuts"
+    },
+    "occasion": {
+      "weeknight": "Weeknight",
+      "weekend": "Weekend",
+      "party": "Party",
+      "holiday": "Holidays",
+      "picnic": "Picnic",
+      "meal-prep": "Meal prep",
+      "comfort": "Comfort food"
+    }
+  },
+  "about": {
+    "title": "About us",
+    "description": "Who is behind ja recipes and why we collect these recipes.",
+    "short": "We are Jochem and Anna. This is where we collect the recipes we love cooking most, so we can always find them again and share them.",
+    "paragraphs": [
+      "We are Jochem and Anna. This is where we collect the recipes we love cooking most, so we can always find them again and share them.",
+      "This text is a placeholder. Replace it in src/i18n/nl.json and src/i18n/en.json."
+    ]
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page doesn't exist (anymore). Perhaps the recipe has moved?",
+    "home": "Go to the home page"
+  },
+  "footer": {
+    "madeWith": "Cooked with love by Jochem and Anna."
+  }
+}

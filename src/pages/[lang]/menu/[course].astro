@@ -1,0 +1,34 @@
+---
+import RecipeGrid from '../../../components/RecipeGrid.astro';
+import Stack from '../../../components/layout/Stack.astro';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import { languageFromParams, languages, useTranslations } from '../../../i18n/utils';
+import { getRecipesByCourse, toCardData } from '../../../lib/recipes';
+import { courses, type Course } from '../../../lib/taxonomy';
+
+export function getStaticPaths() {
+  return languages.flatMap((lang) => [...courses, 'all' as const].map((course) => ({ params: { lang, course } })));
+}
+
+const lang = languageFromParams(Astro.params.lang);
+const course = Astro.params.course as Course | 'all';
+const t = useTranslations(lang);
+
+const recipes = await getRecipesByCourse(lang, course);
+const title = course === 'all' ? t('course.allTitle') : t(`courses.${course}`);
+---
+
+<PageLayout lang={lang} title={title} description={t('course.description', { course: title })}>
+  <Stack as="header" gap="2xs">
+    <h1>{title}</h1>
+    <p class="course__count">{t.count('course.count', recipes.length)}</p>
+  </Stack>
+
+  <RecipeGrid recipes={recipes.map((recipe) => toCardData(recipe, t))} headingLevel="h2" emptyText={t('course.empty')} />
+</PageLayout>
+
+<style>
+  .course__count {
+    color: var(--color-text-muted);
+  }
+</style>

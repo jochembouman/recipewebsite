@@ -1,0 +1,29 @@
+---
+/** One 404 page for the whole site (static hosts serve a single /404.html), shown in both languages. */
+import Stack from '../components/layout/Stack.astro';
+import PageLayout from '../layouts/PageLayout.astro';
+import { defaultLang, languages, localizedPath, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(defaultLang);
+const alternates = Object.fromEntries(languages.map((lang) => [lang, localizedPath(lang)])) as Record<
+  (typeof languages)[number],
+  string
+>;
+---
+
+<PageLayout lang={defaultLang} title={t('notFound.title')} alternates={alternates} noindex width="reading">
+  {
+    languages.map((lang) => {
+      const tl = useTranslations(lang);
+      return (
+        <Stack as="section" gap="sm" lang={lang}>
+          {lang === defaultLang ? <h1>{tl('notFound.title')}</h1> : <h2>{tl('notFound.title')}</h2>}
+          <p>{tl('notFound.text')}</p>
+          <p>
+            <a href={localizedPath(lang)}>{tl('notFound.home')}</a>
+          </p>
+        </Stack>
+      );
+    })
+  }
+</PageLayout>

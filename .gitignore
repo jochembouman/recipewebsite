@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+.vercel/
+
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.*
+
+# logs
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# bronmap recepten-import (wordt na controle verwijderd)
+Kookboek/
+IMPORT-RAPPORT.md

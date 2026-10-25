@@ -1,0 +1,239 @@
+---
+/** Hamburger button with a slide-out navigation panel. Without JavaScript the links show inline. */
+import Button from './Button.astro';
+
+export interface NavLink {
+  href: string;
+  label: string;
+  current: boolean;
+}
+
+export interface NavSection {
+  heading?: string;
+  links: NavLink[];
+}
+
+interface Props {
+  id?: string;
+  label: string;
+  openLabel: string;
+  closeLabel: string;
+  sections: NavSection[];
+}
+
+const { id = 'site-nav', label, openLabel, closeLabel, sections } = Astro.props;
+---
+
+<div class="nav-menu" data-nav-menu>
+  <Button
+    variant="ghost"
+    shape="icon"
+    class="nav-menu__toggle"
+    aria-expanded="false"
+    aria-controls={id}
+    data-nav-open
+  >
+    <span class="nav-menu__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="visually-hidden">{openLabel}</span>
+  </Button>
+
+  <div class="nav-menu__backdrop" data-nav-backdrop></div>
+
+  <nav id={id} class="nav-menu__panel" aria-label={label} data-nav-panel>
+    <div class="nav-menu__panel-header">
+      <Button variant="ghost" shape="icon" data-nav-close>
+        <span class="nav-menu__cross" aria-hidden="true"></span>
+        <span class="visually-hidden">{closeLabel}</span>
+      </Button>
+    </div>
+    {
+      sections.map((section) => (
+        <div class="nav-menu__section">
+          {section.heading && <p class="nav-menu__heading">{section.heading}</p>}
+          <ul class="nav-menu__list">
+            {section.links.map((link) => (
+              <li>
+                <a class="nav-menu__link" href={link.href} aria-current={link.current ? 'page' : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </nav>
+</div>
+
+<style>
+  .nav-menu__bars {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: var(--icon-size);
+    height: calc(var(--icon-size) * 0.75);
+  }
+
+  .nav-menu__bars span {
+    display: block;
+    height: 2px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+  }
+
+  .nav-menu__cross {
+    position: relative;
+    width: var(--icon-size);
+    height: var(--icon-size);
+  }
+
+  .nav-menu__cross::before,
+  .nav-menu__cross::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 2px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  .nav-menu__cross::after {
+    transform: rotate(-45deg);
+  }
+
+  .nav-menu__section + .nav-menu__section {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .nav-menu__heading {
+    margin-bottom: var(--space-2xs);
+    padding-inline: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+  }
+
+  .nav-menu__list {
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-menu__link {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding-inline: var(--space-sm);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: var(--text-lg);
+    text-decoration: none;
+  }
+
+  .nav-menu__link:hover,
+  .nav-menu__link[aria-current='page'] {
+    background: var(--color-surface-muted);
+    color: var(--color-heading);
+  }
+
+  .nav-menu__link[aria-current='page'] {
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Without JavaScript: no toggle, the links are simply listed below the header. */
+  :global(html:not(.js)) .nav-menu {
+    flex-basis: 100%;
+    order: 99;
+  }
+
+  :global(html:not(.js)) .nav-menu :global(.nav-menu__toggle),
+  :global(html:not(.js)) .nav-menu__panel-header,
+  :global(html:not(.js)) .nav-menu__backdrop {
+    display: none;
+  }
+
+  /* With JavaScript: an off-canvas panel from the left. */
+  :global(html.js) .nav-menu__panel {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: var(--z-nav);
+    width: var(--nav-panel-width);
+    overflow-y: auto;
+    padding: var(--space-sm) var(--space-md) var(--space-xl);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform var(--duration-base) var(--easing-standard),
+      visibility 0s linear var(--duration-base);
+  }
+
+  :global(html.js) .nav-menu__panel[data-open] {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--duration-base) var(--easing-standard);
+  }
+
+  .nav-menu__panel-header {
+    display: flex;
+    margin-bottom: var(--space-sm);
+  }
+
+  .nav-menu__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-nav);
+    background: var(--color-overlay);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--easing-standard);
+  }
+
+  .nav-menu__backdrop[data-open] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-nav-menu]')) {
+    const openButton = root.querySelector<HTMLButtonElement>('[data-nav-open]')!;
+    const closeButton = root.querySelector<HTMLButtonElement>('[data-nav-close]')!;
+    const panel = root.querySelector<HTMLElement>('[data-nav-panel]')!;
+    const backdrop = root.querySelector<HTMLElement>('[data-nav-backdrop]')!;
+
+    const isOpen = () => panel.hasAttribute('data-open');
+
+    function setOpen(open: boolean, { restoreFocus = true } = {}) {
+      panel.toggleAttribute('data-open', open);
+      backdrop.toggleAttribute('data-open', open);
+      openButton.setAttribute('aria-expanded', String(open));
+      if (open) {
+        (panel.querySelector<HTMLElement>('[aria-current="page"]') ?? closeButton).focus();
+      } else if (restoreFocus) {
+        openButton.focus();
+      }
+    }
+
+    openButton.addEventListener('click', () => setOpen(true));
+    closeButton.addEventListener('click', () => setOpen(false));
+    backdrop.addEventListener('click', () => setOpen(false));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isOpen()) setOpen(false);
+    });
+
+    // Close when keyboard focus moves outside the panel.
+    panel.addEventListener('focusout', (event) => {
+      const next = event.relatedTarget as Node | null;
+      if (isOpen() && next && !panel.contains(next)) setOpen(false, { restoreFocus: false });
+    });
+  }
+</script>

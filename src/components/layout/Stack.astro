@@ -1,0 +1,25 @@
+---
+/** Vertical flow with consistent spacing between children. Layout only. */
+type Space = '3xs' | '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+
+interface Props {
+  as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'ul' | 'ol';
+  gap?: Space;
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { as: Tag = 'div', gap = 'md', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['stack', className]} style={`--stack-gap: var(--space-${gap})`} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-gap);
+  }
+</style>

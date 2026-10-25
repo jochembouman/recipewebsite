@@ -1,0 +1,113 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import TagList, { type Tag } from './TagList.astro';
+
+export interface RecipeCardData {
+  href: string;
+  title: string;
+  /** Only drafts may lack a photo. */
+  image?: ImageMetadata;
+  imageAlt?: string;
+  tags: Tag[];
+  /** Small label, e.g. the content language when a translation is missing. */
+  badge?: string;
+}
+
+interface Props extends RecipeCardData {
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { href, title, image, imageAlt, tags, badge, headingLevel: Heading = 'h3' } = Astro.props;
+---
+
+<article class="recipe-card">
+  <div class="recipe-card__media">
+    {
+      image && (
+        <Image
+          src={image}
+          alt={imageAlt ?? ''}
+          widths={[400, 800]}
+          sizes="(min-width: 48rem) 22rem, 100vw"
+          class="recipe-card__image"
+          loading="lazy"
+        />
+      )
+    }
+  </div>
+  <div class="recipe-card__body">
+    <Heading class="recipe-card__title">
+      <a class="recipe-card__link" href={href}>{title}</a>
+    </Heading>
+    {badge && <p class="recipe-card__badge">{badge}</p>}
+    <TagList tags={tags} />
+  </div>
+</article>
+
+<style>
+  .recipe-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--duration-base) var(--easing-standard);
+  }
+
+  .recipe-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Make the whole card clickable through the title link. */
+  .recipe-card:focus-within {
+    outline: var(--focus-ring-width) solid var(--color-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .recipe-card__media {
+    aspect-ratio: 3 / 2;
+    background: var(--color-surface-muted);
+  }
+
+  .recipe-card :global(.recipe-card__image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .recipe-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+  }
+
+  .recipe-card__title {
+    font-size: var(--text-lg);
+  }
+
+  .recipe-card__link {
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+
+  .recipe-card__link:focus-visible {
+    outline: none;
+  }
+
+  .recipe-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .recipe-card__badge {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+</style>

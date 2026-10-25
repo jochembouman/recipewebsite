@@ -1,0 +1,39 @@
+---
+import Cluster from './layout/Cluster.astro';
+
+export interface Tag {
+  group: string;
+  label: string;
+}
+
+interface Props {
+  tags: Tag[];
+  label?: string;
+}
+
+const { tags, label } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <Cluster as="ul" gap="2xs" class="tag-list" aria-label={label}>
+      {tags.map((tag) => (
+        <li class="tag" data-group={tag.group}>
+          {tag.label}
+        </li>
+      ))}
+    </Cluster>
+  )
+}
+
+<style>
+  .tag {
+    padding: var(--space-3xs) var(--space-xs);
+    border-radius: var(--radius-pill);
+    background: var(--color-tag-bg);
+    color: var(--color-tag-text);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-body);
+  }
+</style>

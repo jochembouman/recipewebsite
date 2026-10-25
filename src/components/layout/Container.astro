@@ -1,0 +1,31 @@
+---
+/** Centres content and applies the page gutter. Layout only. */
+interface Props {
+  as?: 'div' | 'section' | 'header' | 'footer' | 'article';
+  width?: 'content' | 'reading';
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { as: Tag = 'div', width = 'content', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['container', `container--${width}`, className]} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .container {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+  }
+
+  .container--content {
+    max-width: calc(var(--content-width) + 2 * var(--page-gutter));
+  }
+
+  .container--reading {
+    max-width: calc(var(--reading-width) + 2 * var(--page-gutter));
+  }
+</style>

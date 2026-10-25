@@ -1,0 +1,72 @@
+---
+/** Links to the current page in every language. Each link is labelled in its own language. */
+export interface LanguageLink {
+  lang: string;
+  href: string;
+  short: string;
+  label: string;
+  current: boolean;
+}
+
+interface Props {
+  label: string;
+  links: LanguageLink[];
+}
+
+const { label, links } = Astro.props;
+---
+
+<nav class="language-switcher" aria-label={label}>
+  <ul class="language-switcher__list">
+    {
+      links.map((link) => (
+        <li>
+          <a
+            class="language-switcher__link"
+            href={link.href}
+            hreflang={link.lang}
+            lang={link.lang}
+            aria-current={link.current ? 'true' : undefined}
+          >
+            <span aria-hidden="true">{link.short}</span>
+            <span class="visually-hidden">{link.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .language-switcher__list {
+    display: flex;
+    gap: var(--space-3xs);
+    padding: var(--space-3xs);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    list-style: none;
+  }
+
+  .language-switcher__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--tap-target);
+    min-height: calc(var(--tap-target) - 2 * var(--space-3xs));
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+  }
+
+  .language-switcher__link:hover {
+    color: var(--color-heading);
+  }
+
+  .language-switcher__link[aria-current='true'] {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+</style>

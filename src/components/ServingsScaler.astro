@@ -1,0 +1,134 @@
+---
+/**
+ * Min/plus control for the number of servings. Rescales every `[data-amount]`
+ * inside the element with id `target`. Without JavaScript only the base servings are shown.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  target: string;
+  servings: number;
+  locale: string;
+  label: string;
+  decreaseLabel: string;
+  increaseLabel: string;
+  /** e.g. "Voor {count} personen" or "{count} stuks", depending on the unit of the servings. */
+  servingsTemplate: string;
+  servingsOneTemplate: string;
+  min?: number;
+  max?: number;
+}
+
+const {
+  target,
+  servings,
+  locale,
+  label,
+  decreaseLabel,
+  increaseLabel,
+  servingsTemplate,
+  servingsOneTemplate,
+  min = 1,
+  max = 50,
+} = Astro.props;
+
+const servingsText = (servings === 1 ? servingsOneTemplate : servingsTemplate).replace('{count}', String(servings));
+---
+
+<div
+  class="servings-scaler"
+  data-servings-scaler
+  data-target={target}
+  data-base={servings}
+  data-min={min}
+  data-max={max}
+  data-locale={locale}
+  data-template={servingsTemplate}
+  data-template-one={servingsOneTemplate}
+>
+  <p class="servings-scaler__static" data-scaler-static>{servingsText}</p>
+
+  <div class="servings-scaler__controls" role="group" aria-labelledby={`${target}-servings-label`} data-scaler-controls hidden>
+    <span class="servings-scaler__label" id={`${target}-servings-label`}>{label}</span>
+    <Button shape="icon" aria-label={decreaseLabel} aria-controls={target} data-scaler-decrease data-print-hidden>
+      <span aria-hidden="true">−</span>
+    </Button>
+    <output class="servings-scaler__value" data-scaler-value aria-hidden="true">{servings}</output>
+    <Button shape="icon" aria-label={increaseLabel} aria-controls={target} data-scaler-increase data-print-hidden>
+      <span aria-hidden="true">+</span>
+    </Button>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-scaler-status></p>
+</div>
+
+<style>
+  .servings-scaler__static {
+    color: var(--color-text-muted);
+  }
+
+  .servings-scaler__controls {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .servings-scaler__label {
+    margin-inline-end: var(--space-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .servings-scaler__value {
+    min-width: 2ch;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import { formatQuantity } from '../lib/quantity';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-servings-scaler]')) {
+    const { target, locale = 'nl-NL', template = '', templateOne = '' } = root.dataset;
+    const base = Number(root.dataset.base);
+    const min = Number(root.dataset.min);
+    const max = Number(root.dataset.max);
+    const list = target ? document.getElementById(target) : null;
+    if (!list || !base) continue;
+
+    const controls = root.querySelector<HTMLElement>('[data-scaler-controls]')!;
+    const staticText = root.querySelector<HTMLElement>('[data-scaler-static]')!;
+    const value = root.querySelector<HTMLOutputElement>('[data-scaler-value]')!;
+    const status = root.querySelector<HTMLElement>('[data-scaler-status]')!;
+    const decrease = root.querySelector<HTMLButtonElement>('[data-scaler-decrease]')!;
+    const increase = root.querySelector<HTMLButtonElement>('[data-scaler-increase]')!;
+    const amounts = [...list.querySelectorAll<HTMLElement>('[data-amount]')];
+
+    let servings = base;
+
+    function render() {
+      const factor = servings / base;
+      for (const element of amounts) {
+        element.textContent = formatQuantity(Number(element.dataset.amount) * factor, element.dataset.unit, locale);
+      }
+      value.textContent = String(servings);
+      decrease.disabled = servings <= min;
+      increase.disabled = servings >= max;
+      staticText.textContent = (servings === 1 ? templateOne : template).replace('{count}', String(servings));
+    }
+
+    function change(delta: number) {
+      servings = Math.min(max, Math.max(min, servings + delta));
+      render();
+      status.textContent = staticText.textContent;
+    }
+
+    decrease.addEventListener('click', () => change(-1));
+    increase.addEventListener('click', () => change(1));
+
+    controls.hidden = false;
+    staticText.classList.add('visually-hidden');
+    render();
+  }
+</script>

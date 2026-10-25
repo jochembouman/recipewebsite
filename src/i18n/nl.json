@@ -1,0 +1,169 @@
+{
+  "site": {
+    "name": "ja recipes",
+    "description": "Onze verzameling favoriete recepten: van snelle doordeweekse gerechten tot uitgebreide etentjes."
+  },
+  "nav": {
+    "label": "Hoofdmenu",
+    "open": "Menu openen",
+    "close": "Menu sluiten",
+    "home": "Home",
+    "menuHeading": "Menu",
+    "about": "Over ons",
+    "skipToContent": "Ga naar de inhoud"
+  },
+  "language": {
+    "label": "Taal",
+    "switchTo": "Bekijk deze pagina in het Nederlands",
+    "short": "NL",
+    "nl": "Nederlands",
+    "en": "Engels"
+  },
+  "courses": {
+    "starter": "Voorgerechten",
+    "main": "Hoofdgerechten",
+    "dessert": "Dessert",
+    "side-salad": "Bijgerechten & salades",
+    "preserves-dips": "Ingemaakt & dips",
+    "breakfast-lunch": "Ontbijt & lunch",
+    "all": "Alles"
+  },
+  "course": {
+    "allTitle": "Alle recepten",
+    "description": "{course}: alle recepten uit deze categorie.",
+    "empty": "Er staan nog geen recepten in deze categorie.",
+    "count": "{count} recepten",
+    "countOne": "1 recept"
+  },
+  "home": {
+    "title": "Recepten",
+    "intro": "Gerechten die we steeds opnieuw maken.",
+    "latest": "Laatste recepten",
+    "viewAll": "Bekijk alle recepten",
+    "aboutHeading": "Over ons",
+    "aboutLink": "Lees meer over ons"
+  },
+  "search": {
+    "label": "Zoek een recept",
+    "placeholder": "Zoek op titel…",
+    "resultsHeading": "Zoekresultaten",
+    "resultsCount": "{count} recepten gevonden",
+    "resultsCountOne": "1 recept gevonden",
+    "noResults": "Geen recepten gevonden. Probeer een ander woord."
+  },
+  "recipe": {
+    "ingredients": "Ingrediënten",
+    "equipment": "Benodigdheden",
+    "steps": "Bereiding",
+    "note": "Opmerking",
+    "source": "Inspiratie",
+    "ratings": "Beoordeling",
+    "servings": "Porties",
+    "servingsFor": {
+      "persons": "Voor {count} personen",
+      "personsOne": "Voor 1 persoon",
+      "portions": "{count} porties",
+      "portionsOne": "1 portie",
+      "pieces": "{count} stuks",
+      "piecesOne": "1 stuk",
+      "bowls": "{count} kommen",
+      "bowlsOne": "1 kom",
+      "jars": "{count} potten",
+      "jarsOne": "1 pot",
+      "loaves": "{count} broden",
+      "loavesOne": "1 brood",
+      "scoops": "{count} bolletjes",
+      "scoopsOne": "1 bolletje",
+      "skewers": "{count} stokjes",
+      "skewersOne": "1 stokje"
+    },
+    "decreaseServings": "Minder porties",
+    "increaseServings": "Meer porties",
+    "prepTime": "Voorbereiding",
+    "cookTime": "Bereidingstijd",
+    "print": "Recept printen",
+    "backToCourse": "Terug naar {course}",
+    "draft": "Concept",
+    "draftNotice": "Concept: dit recept is alleen zichtbaar tijdens het ontwikkelen (npm run dev) en staat niet op de live site.",
+    "fallbackNotice": "Dit recept is nog niet vertaald. Je ziet de {language} versie.",
+    "fallbackLanguage": {
+      "nl": "Nederlandse",
+      "en": "Engelse"
+    },
+    "inLanguage": {
+      "nl": "Nederlands",
+      "en": "Engels"
+    },
+    "metaDescription": "Recept voor {title}."
+  },
+  "time": {
+    "minutes": "{minutes} min",
+    "hours": "{hours} u",
+    "hoursMinutes": "{hours} u {minutes} min"
+  },
+  "ratings": {
+    "easeOfCooking": "Op gemak",
+    "tokoFactor": "Toko gehalte",
+    "jochem": "Lekker Jochem",
+    "anna": "Lekker Anna",
+    "value": "{value} van 5"
+  },
+  "tags": {
+    "groups": {
+      "course": "Gang",
+      "diet": "Dieet",
+      "protein": "Eiwit",
+      "occasion": "Gelegenheid",
+      "country": "Land"
+    },
+    "diet": {
+      "vegetarian": "Vegetarisch",
+      "vegan": "Vegan",
+      "pescatarian": "Pescotarisch",
+      "gluten-free": "Glutenvrij",
+      "dairy-free": "Zuivelvrij"
+    },
+    "protein": {
+      "chicken": "Kip",
+      "beef": "Rund",
+      "pork": "Varken",
+      "lamb": "Lam",
+      "duck": "Eend",
+      "fish": "Vis",
+      "seafood": "Zeevruchten",
+      "tofu": "Tofu",
+      "tempeh": "Tempeh",
+      "seitan": "Seitan",
+      "egg": "Ei",
+      "legumes": "Peulvruchten",
+      "cheese": "Kaas",
+      "nuts": "Noten"
+    },
+    "occasion": {
+      "weeknight": "Doordeweeks",
+      "weekend": "Weekend",
+      "party": "Feestje",
+      "holiday": "Feestdagen",
+      "picnic": "Picknick",
+      "meal-prep": "Meal prep",
+      "comfort": "Comfort food"
+    }
+  },
+  "about": {
+    "title": "Over ons",
+    "description": "Wie er achter ja recipes zitten en waarom we deze recepten verzamelen.",
+    "short": "Wij zijn Jochem en Anna. Hier verzamelen we de recepten die we zelf het liefst koken, zodat we ze altijd terug kunnen vinden en kunnen delen.",
+    "paragraphs": [
+      "Wij zijn Jochem en Anna. Hier verzamelen we de recepten die we zelf het liefst koken, zodat we ze altijd terug kunnen vinden en kunnen delen.",
+      "Deze tekst is een placeholder. Vervang hem in src/i18n/nl.json en src/i18n/en.json."
+    ]
+  },
+  "notFound": {
+    "title": "Pagina niet gevonden",
+    "text": "Deze pagina bestaat niet (meer). Misschien is het recept verhuisd?",
+    "home": "Naar de startpagina"
+  },
+  "footer": {
+    "madeWith": "Met liefde gekookt door Jochem en Anna."
+  }
+}

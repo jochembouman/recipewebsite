@@ -1,0 +1,137 @@
+---
+/**
+ * Client-side title search. All searchable cards are rendered (hidden) in the slot;
+ * each slot item needs `data-search-item` and `data-search-text`.
+ * While a query is active, the element with id `hideWhileSearching` is hidden.
+ */
+import ContentSection from './ContentSection.astro';
+import Grid from './layout/Grid.astro';
+
+interface Props {
+  label: string;
+  placeholder: string;
+  resultsHeading: string;
+  countTemplate: string;
+  countOneTemplate: string;
+  noResults: string;
+  hideWhileSearching?: string;
+}
+
+const { label, placeholder, resultsHeading, countTemplate, countOneTemplate, noResults, hideWhileSearching } =
+  Astro.props;
+---
+
+<div
+  class="recipe-search"
+  data-recipe-search
+  data-count-template={countTemplate}
+  data-count-one-template={countOneTemplate}
+  data-hide-while-searching={hideWhileSearching}
+>
+  <form class="recipe-search__form" role="search" data-search-form hidden data-print-hidden>
+    <label class="recipe-search__label" for="recipe-search-input">{label}</label>
+    <input
+      class="recipe-search__input"
+      id="recipe-search-input"
+      type="search"
+      name="q"
+      placeholder={placeholder}
+      autocomplete="off"
+      enterkeyhint="search"
+      data-search-input
+    />
+  </form>
+
+  <p class="visually-hidden" aria-live="polite" data-search-status></p>
+
+  <ContentSection id="search-results" heading={resultsHeading} hidden data-search-results>
+    <Grid as="ul">
+      <slot />
+    </Grid>
+    <p class="recipe-search__empty" data-search-empty hidden>{noResults}</p>
+  </ContentSection>
+</div>
+
+<style>
+  .recipe-search {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .recipe-search__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  .recipe-search__label {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .recipe-search__input {
+    width: 100%;
+    min-height: var(--tap-target);
+    padding: var(--space-xs) var(--space-md);
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+  }
+
+  .recipe-search__input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .recipe-search__empty {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  const normalize = (text: string) =>
+    text
+      .toLocaleLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '');
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-recipe-search]')) {
+    const form = root.querySelector<HTMLFormElement>('[data-search-form]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-search-input]')!;
+    const status = root.querySelector<HTMLElement>('[data-search-status]')!;
+    const results = root.querySelector<HTMLElement>('[data-search-results]')!;
+    const empty = root.querySelector<HTMLElement>('[data-search-empty]')!;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-search-item]')].map((element) => ({
+      element,
+      text: normalize(element.dataset.searchText ?? ''),
+    }));
+    const hideId = root.dataset.hideWhileSearching;
+    const hideTarget = hideId ? document.getElementById(hideId) : null;
+
+    // The search only works with JavaScript, so it is only shown then.
+    form.hidden = false;
+    form.addEventListener('submit', (event) => event.preventDefault());
+
+    function update() {
+      const words = normalize(input.value).split(/\s+/).filter(Boolean);
+      const searching = words.length > 0;
+      let count = 0;
+
+      for (const item of items) {
+        const match = searching && words.every((word) => item.text.includes(word));
+        item.element.hidden = !match;
+        if (match) count += 1;
+      }
+
+      results.hidden = !searching;
+      empty.hidden = count > 0;
+      if (hideTarget) hideTarget.hidden = searching;
+
+      const template = count === 1 ? root.dataset.countOneTemplate : root.dataset.countTemplate;
+      status.textContent = searching ? (template ?? '').replace('{count}', String(count)) : '';
+    }
+
+    for (const item of items) item.element.hidden = true;
+    input.addEventListener('input', update);
+    if (input.value) update();
+  }
+</script>

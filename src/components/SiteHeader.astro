@@ -1,0 +1,50 @@
+---
+import Container from './layout/Container.astro';
+import LanguageSwitcher, { type LanguageLink } from './LanguageSwitcher.astro';
+import NavMenu, { type NavSection } from './NavMenu.astro';
+
+interface Props {
+  siteName: string;
+  homeHref: string;
+  nav: { label: string; openLabel: string; closeLabel: string; sections: NavSection[] };
+  languages: { label: string; links: LanguageLink[] };
+}
+
+const { siteName, homeHref, nav, languages } = Astro.props;
+---
+
+<header class="site-header" data-print-hidden>
+  <Container class="site-header__bar">
+    <NavMenu {...nav} />
+    <a class="site-header__brand" href={homeHref}>{siteName}</a>
+    <LanguageSwitcher {...languages} />
+  </Container>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    border-bottom: var(--border-width) solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .site-header :global(.site-header__bar) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: var(--header-height);
+    padding-block: var(--space-2xs);
+  }
+
+  .site-header__brand {
+    margin-inline-end: auto;
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+  }
+</style>

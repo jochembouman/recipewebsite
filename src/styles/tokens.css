@@ -1,0 +1,128 @@
+/*
+ * Design tokens: the single source of truth for how the site looks.
+ * Components only use the semantic tokens (second block), never raw values.
+ * To restyle the site, change the values here; to rebrand, start with the palette.
+ *
+ * Placeholder theme: calm matcha / pistachio green. Will be replaced by the design system.
+ */
+
+:root {
+  /* ---------- Palette (primitives) ---------- */
+  --palette-matcha-50: #f6f8f1;
+  --palette-matcha-100: #ebf0df;
+  --palette-matcha-200: #d9e4c3;
+  --palette-matcha-300: #bfd29c;
+  --palette-matcha-500: #7f9a4f;
+  --palette-matcha-600: #5c7a2e;
+  --palette-matcha-700: #45601f;
+  --palette-matcha-800: #334818;
+  --palette-matcha-900: #1f2b12;
+  --palette-pistachio-100: #eef3e0;
+  --palette-pistachio-200: #dfe9c6;
+  --palette-neutral-0: #ffffff;
+  --palette-neutral-200: #d5d9cc;
+  --palette-neutral-600: #545c4b;
+  --palette-neutral-900: #1d2219;
+  --palette-gold-500: #8a6a12;
+
+  /* ---------- Semantic colours ---------- */
+  --color-bg: var(--palette-matcha-50);
+  --color-surface: var(--palette-neutral-0);
+  --color-surface-muted: var(--palette-pistachio-100);
+  --color-text: var(--palette-neutral-900);
+  --color-text-muted: var(--palette-neutral-600);
+  --color-heading: var(--palette-matcha-900);
+  --color-link: var(--palette-matcha-700);
+  --color-link-hover: var(--palette-matcha-900);
+  --color-border: var(--palette-neutral-200);
+  --color-border-strong: var(--palette-matcha-500);
+  --color-accent: var(--palette-matcha-700);
+  --color-accent-hover: var(--palette-matcha-800);
+  --color-on-accent: var(--palette-neutral-0);
+  --color-tag-bg: var(--palette-pistachio-200);
+  --color-tag-text: var(--palette-matcha-900);
+  --color-notice-bg: var(--palette-matcha-100);
+  --color-notice-border: var(--palette-matcha-300);
+  --color-notice-text: var(--palette-matcha-900);
+  --color-star-filled: var(--palette-matcha-600);
+  --color-star-empty: var(--palette-matcha-200);
+  --color-focus: var(--palette-gold-500);
+  --color-overlay: rgb(29 34 25 / 0.4);
+
+  /* ---------- Typography ---------- */
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Fluid type scale: grows gently from phone to desktop. */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.4rem + 2vw, 2.75rem);
+
+  --line-height-tight: 1.2;
+  --line-height-body: 1.6;
+  --letter-spacing-wide: 0.04em;
+
+  /* ---------- Spacing ---------- */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+
+  /* ---------- Shape ---------- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+  --border-width: 1px;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-sm: 0 1px 2px rgb(31 43 18 / 0.08);
+  --shadow-md: 0 4px 12px rgb(31 43 18 / 0.1);
+  --shadow-lg: 0 12px 32px rgb(31 43 18 / 0.16);
+
+  /* ---------- Layout ---------- */
+  --content-width: 72rem;
+  --reading-width: 42rem;
+  --page-gutter: var(--space-md);
+  --card-min-width: 15rem;
+  --nav-panel-width: min(20rem, 85vw);
+  --header-height: 3.5rem;
+  --star-size: 1.125rem;
+  --icon-size: 1.5rem;
+  --tap-target: 2.75rem;
+  --z-header: 10;
+  --z-nav: 20;
+
+  /* ---------- Motion ---------- */
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --page-gutter: var(--space-xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}
