@@ -1,0 +1,66 @@
+---
+import ContentSection from '../../components/ContentSection.astro';
+import RecipeCard from '../../components/RecipeCard.astro';
+import RecipeGrid from '../../components/RecipeGrid.astro';
+import RecipeSearch from '../../components/RecipeSearch.astro';
+import Stack from '../../components/layout/Stack.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { languageFromParams, localizedPath, staticLanguagePaths, useTranslations } from '../../i18n/utils';
+import { getRecipes, toCardData } from '../../lib/recipes';
+
+export const getStaticPaths = staticLanguagePaths;
+
+const LATEST_COUNT = 6;
+
+const lang = languageFromParams(Astro.params.lang);
+const t = useTranslations(lang);
+const cards = (await getRecipes(lang)).map((recipe) => toCardData(recipe, t));
+---
+
+<PageLayout lang={lang}>
+  <Stack as="header" gap="xs">
+    <h1>{t('home.title')}</h1>
+    <p class="home__intro">{t('home.intro')}</p>
+  </Stack>
+
+  <RecipeSearch
+    label={t('search.label')}
+    placeholder={t('search.placeholder')}
+    resultsHeading={t('search.resultsHeading')}
+    countTemplate={t('search.resultsCount')}
+    countOneTemplate={t('search.resultsCountOne')}
+    noResults={t('search.noResults')}
+    hideWhileSearching="home-content"
+  >
+    {
+      cards.map((card) => (
+        <li data-search-item data-search-text={card.title}>
+          <RecipeCard {...card} />
+        </li>
+      ))
+    }
+  </RecipeSearch>
+
+  <Stack id="home-content" gap="2xl">
+    <ContentSection id="latest" heading={t('home.latest')}>
+      <RecipeGrid recipes={cards.slice(0, LATEST_COUNT)} />
+      <p><a href={localizedPath(lang, 'menu/all')}>{t('home.viewAll')}</a></p>
+    </ContentSection>
+
+    <ContentSection id="about" heading={t('home.aboutHeading')} class="home__about">
+      <p>{t('about.short')}</p>
+      <p><a href={localizedPath(lang, 'about')}>{t('home.aboutLink')}</a></p>
+    </ContentSection>
+  </Stack>
+</PageLayout>
+
+<style>
+  .home__intro {
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+  }
+
+  .home__about {
+    max-width: var(--reading-width);
+  }
+</style>

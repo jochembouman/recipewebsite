@@ -1,0 +1,47 @@
+---
+/** Short label/value pairs, e.g. preparation and cooking time. */
+export interface MetaItem {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  items: MetaItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <dl class="meta-list">
+      {items.map((item) => (
+        <div class="meta-list__item">
+          <dt class="meta-list__label">{item.label}</dt>
+          <dd class="meta-list__value">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<style>
+  .meta-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-xl);
+    margin: 0;
+  }
+
+  .meta-list__label {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+  }
+
+  .meta-list__value {
+    margin: 0;
+    font-weight: var(--font-weight-bold);
+  }
+</style>

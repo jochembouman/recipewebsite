@@ -1,0 +1,33 @@
+---
+/** A list of recipe cards, or a message when there are none. */
+import Grid from './layout/Grid.astro';
+import RecipeCard, { type RecipeCardData } from './RecipeCard.astro';
+
+interface Props {
+  recipes: RecipeCardData[];
+  emptyText?: string;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { recipes, emptyText, headingLevel } = Astro.props;
+---
+
+{
+  recipes.length > 0 ? (
+    <Grid as="ul">
+      {recipes.map((recipe) => (
+        <li>
+          <RecipeCard {...recipe} headingLevel={headingLevel} />
+        </li>
+      ))}
+    </Grid>
+  ) : (
+    emptyText && <p class="recipe-grid__empty">{emptyText}</p>
+  )
+}
+
+<style>
+  .recipe-grid__empty {
+    color: var(--color-text-muted);
+  }
+</style>

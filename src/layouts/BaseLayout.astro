@@ -1,0 +1,130 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import type { NavSection } from '../components/NavMenu.astro';
+import { alternatesFor, defaultLang, languages, locales, localizedPath, useTranslations, type Lang } from '../i18n/utils';
+import { courses } from '../lib/taxonomy';
+
+interface Props {
+  lang: Lang;
+  /** Page title without the site name; omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Open Graph image URL (relative or absolute). Defaults to /og-default.jpg. */
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  /** The same page in every language. Defaults to swapping the language prefix of the current URL. */
+  alternates?: Record<Lang, string>;
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  image = '/og-default.jpg',
+  imageAlt,
+  type = 'website',
+  alternates = alternatesFor(Astro.url.pathname),
+  noindex = false,
+} = Astro.props;
+
+const t = useTranslations(lang);
+const siteName = t('site.name');
+const fullTitle = title ? `${title} · ${siteName}` : siteName;
+const metaDescription = description ?? t('site.description');
+const absolute = (path: string) => new URL(path, Astro.site ?? Astro.url).href;
+const canonical = absolute(Astro.url.pathname);
+
+const normalize = (path: string) => path.replace(/\/?$/, '/');
+const isCurrent = (href: string) => normalize(Astro.url.pathname) === normalize(href);
+const link = (href: string, label: string) => ({ href, label, current: isCurrent(href) });
+
+const navSections: NavSection[] = [
+  { links: [link(localizedPath(lang), t('nav.home'))] },
+  {
+    heading: t('nav.menuHeading'),
+    links: [...courses, 'all' as const].map((course) =>
+      link(localizedPath(lang, `menu/${course}`), t(`courses.${course}`)),
+    ),
+  },
+  { links: [link(localizedPath(lang, 'about'), t('nav.about'))] },
+];
+
+const languageLinks = languages.map((code) => {
+  const tLink = useTranslations(code);
+  return {
+    lang: code,
+    href: alternates[code],
+    short: tLink('language.short'),
+    label: tLink('language.switchTo'),
+    current: code === lang,
+  };
+});
+---
+
+<!doctype html>
+<html lang={lang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {languages.map((code) => <link rel="alternate" hreflang={code} href={absolute(alternates[code])} />)}
+    <link rel="alternate" hreflang="x-default" href={absolute(alternates[defaultLang])} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title ?? siteName} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locales[lang].replace('-', '_')} />
+    <meta property="og:image" content={absolute(image)} />
+    {imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main" data-print-hidden>{t('nav.skipToContent')}</a>
+    <SiteHeader
+      siteName={siteName}
+      homeHref={localizedPath(lang)}
+      nav={{ label: t('nav.label'), openLabel: t('nav.open'), closeLabel: t('nav.close'), sections: navSections }}
+      languages={{ label: t('language.label'), links: languageLinks }}
+    />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter siteName={siteName} text={t('footer.madeWith')} />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--space-md);
+    top: var(--space-xs);
+    z-index: var(--z-nav);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  main:focus {
+    outline: none;
+  }
+</style>

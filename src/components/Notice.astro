@@ -1,0 +1,24 @@
+---
+/** A small, calm message box (e.g. "this recipe has not been translated yet"). */
+interface Props {
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<p class:list={['notice', className]} role="note" {...rest}>
+  <slot />
+</p>
+
+<style>
+  .notice {
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--color-notice-border);
+    border-radius: var(--radius-md);
+    background: var(--color-notice-bg);
+    color: var(--color-notice-text);
+    font-size: var(--text-sm);
+  }
+</style>

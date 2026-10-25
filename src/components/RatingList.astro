@@ -1,0 +1,87 @@
+---
+/** Star ratings with a label each. Supports half stars (e.g. 3.5). */
+export interface Rating {
+  key: string;
+  label: string;
+  value: number;
+  /** Displayed value, e.g. "3,5" */
+  valueLabel: string;
+  /** Full text for screen readers, e.g. "3,5 van 5" */
+  valueText: string;
+}
+
+interface Props {
+  ratings: Rating[];
+}
+
+const { ratings } = Astro.props;
+---
+
+<dl class="rating-list">
+  {
+    ratings.map((rating) => (
+      <div class="rating" data-rating={rating.key}>
+        <dt class="rating__label">{rating.label}</dt>
+        <dd class="rating__value">
+          <span class="rating__stars" style={`--rating: ${rating.value}`} aria-hidden="true" />
+          <span class="rating__number" aria-hidden="true">{rating.valueLabel}</span>
+          <span class="visually-hidden">{rating.valueText}</span>
+        </dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .rating-list {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+
+  .rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+
+  .rating__value {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+
+  .rating__stars {
+    --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5 1.4-7.1-5.3-5 7.2-.9z'/%3E%3C/svg%3E");
+    --fill: calc(var(--rating) / 5 * 100%);
+    display: inline-block;
+    width: calc(var(--star-size) * 5);
+    height: var(--star-size);
+    background: linear-gradient(
+      to right,
+      var(--color-star-filled) var(--fill),
+      var(--color-star-empty) var(--fill)
+    );
+    -webkit-mask: var(--star) left center / var(--star-size) var(--star-size) repeat-x;
+    mask: var(--star) left center / var(--star-size) var(--star-size) repeat-x;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .rating__number {
+    min-width: 3ch;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* High-contrast mode drops backgrounds; the number keeps the rating readable. */
+  @media (forced-colors: active) {
+    .rating__stars {
+      display: none;
+    }
+  }
+</style>

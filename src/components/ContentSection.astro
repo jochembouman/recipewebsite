@@ -1,0 +1,29 @@
+---
+/** A titled section. The heading id links the section to its title for screen readers. */
+import Stack from './layout/Stack.astro';
+
+interface Props {
+  id: string;
+  heading: string;
+  headingLevel?: 'h2' | 'h3';
+  visuallyHiddenHeading?: boolean;
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const {
+  id,
+  heading,
+  headingLevel: Heading = 'h2',
+  visuallyHiddenHeading = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Stack as="section" gap="md" aria-labelledby={`${id}-heading`} id={id} class={className} {...rest}>
+  <Heading id={`${id}-heading`} class:list={['content-section__heading', { 'visually-hidden': visuallyHiddenHeading }]}>
+    {heading}
+  </Heading>
+  <slot />
+</Stack>

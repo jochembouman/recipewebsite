@@ -1,0 +1,97 @@
+---
+/**
+ * Ingredients, optionally in groups. Amounts carry their base value in data attributes
+ * so the ServingsScaler can recalculate them in the browser.
+ */
+import { formatQuantity } from '../lib/quantity';
+
+export interface Ingredient {
+  amount?: number;
+  unit?: string;
+  name: string;
+  note?: string;
+}
+
+export interface IngredientGroup {
+  group?: string;
+  items: Ingredient[];
+}
+
+interface Props {
+  id: string;
+  groups: IngredientGroup[];
+  locale: string;
+}
+
+const { id, groups, locale } = Astro.props;
+---
+
+<div class="ingredient-list" id={id}>
+  {
+    groups.map((group) => (
+      <div class="ingredient-list__group" data-print-keep>
+        {group.group && <h3 class="ingredient-list__group-title">{group.group}</h3>}
+        <ul class="ingredient-list__items">
+          {group.items.map((item) => (
+            <li class="ingredient">
+              {item.amount !== undefined && (
+                <span class="ingredient__quantity">
+                  <span data-amount={item.amount} data-unit={item.unit}>
+                    {formatQuantity(item.amount, item.unit, locale)}
+                  </span>
+                  {item.unit && <span class="ingredient__unit">{item.unit}</span>}
+                </span>
+              )}
+              {item.amount === undefined && item.unit && <span class="ingredient__quantity">{item.unit}</span>}
+              <span class="ingredient__name">{item.name}</span>
+              {item.note && <span class="ingredient__note">{item.note}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .ingredient-list__group-title {
+    margin-bottom: var(--space-xs);
+    font-size: var(--text-lg);
+  }
+
+  .ingredient-list__items {
+    padding: 0;
+    list-style: none;
+  }
+
+  .ingredient {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-xs);
+    padding-block: var(--space-xs);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .ingredient:last-child {
+    border-bottom: 0;
+  }
+
+  .ingredient__quantity {
+    display: inline-flex;
+    gap: var(--space-2xs);
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ingredient__note {
+    flex-basis: 100%;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+</style>

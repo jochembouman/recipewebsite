@@ -1,0 +1,17 @@
+---
+import Stack from '../../components/layout/Stack.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { languageFromParams, staticLanguagePaths, useTranslations } from '../../i18n/utils';
+
+export const getStaticPaths = staticLanguagePaths;
+
+const lang = languageFromParams(Astro.params.lang);
+const t = useTranslations(lang);
+---
+
+<PageLayout lang={lang} title={t('about.title')} description={t('about.description')} width="reading">
+  <Stack as="article" gap="md">
+    <h1>{t('about.title')}</h1>
+    {t.list('about.paragraphs').map((paragraph) => <p>{paragraph}</p>)}
+  </Stack>
+</PageLayout>

@@ -1,0 +1,30 @@
+---
+/** Responsive auto-filling grid (e.g. recipe cards). Layout only. */
+interface Props {
+  as?: 'div' | 'ul' | 'ol';
+  minItemWidth?: string;
+  gap?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { as: Tag = 'div', minItemWidth = 'var(--card-min-width)', gap = 'lg', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['grid', className]} style={`--grid-min: ${minItemWidth}; --grid-gap: var(--space-${gap})`} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min), 100%), 1fr));
+    gap: var(--grid-gap);
+    margin: 0;
+    padding: 0;
+  }
+
+  .grid:is(ul, ol) {
+    list-style: none;
+  }
+</style>

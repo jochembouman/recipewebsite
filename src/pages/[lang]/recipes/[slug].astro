@@ -1,0 +1,262 @@
+---
+import { getImage, Image } from 'astro:assets';
+import { render } from 'astro:content';
+import ContentSection from '../../../components/ContentSection.astro';
+import IngredientList from '../../../components/IngredientList.astro';
+import MetaList from '../../../components/MetaList.astro';
+import Notice from '../../../components/Notice.astro';
+import PrintButton from '../../../components/PrintButton.astro';
+import RatingList from '../../../components/RatingList.astro';
+import ServingsScaler from '../../../components/ServingsScaler.astro';
+import StepList from '../../../components/StepList.astro';
+import TagList from '../../../components/TagList.astro';
+import Cluster from '../../../components/layout/Cluster.astro';
+import Stack from '../../../components/layout/Stack.astro';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import { languages, locales, localizedPath, useTranslations } from '../../../i18n/utils';
+import { formatMinutes, getRecipes, tagLabels, type Recipe } from '../../../lib/recipes';
+import { ratingKeys } from '../../../lib/taxonomy';
+
+export async function getStaticPaths() {
+  const perLanguage = await Promise.all(languages.map((lang) => getRecipes(lang)));
+  return perLanguage.flat().map((recipe) => ({ params: { lang: recipe.lang, slug: recipe.slug }, props: { recipe } }));
+}
+
+interface Props {
+  recipe: Recipe;
+}
+
+const { recipe } = Astro.props;
+const { lang, contentLang, isFallback } = recipe;
+const data = recipe.entry.data;
+const t = useTranslations(lang);
+const locale = locales[lang];
+const { Content } = await render(recipe.entry);
+
+const ogImage = data.image && (await getImage({ src: data.image, width: 1200, format: 'jpg' }));
+
+const timeItems = [
+  data.prepTime !== undefined && { label: t('recipe.prepTime'), value: formatMinutes(data.prepTime, t) },
+  data.cookTime !== undefined && { label: t('recipe.cookTime'), value: formatMinutes(data.cookTime, t) },
+].filter((item) => item !== false);
+
+const numberFormat = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+const ratings = ratingKeys.flatMap((key) => {
+  const value = data.ratings[key];
+  if (value === undefined) return [];
+  const valueLabel = numberFormat.format(value);
+  return [{ key, label: t(`ratings.${key}`), value, valueLabel, valueText: t('ratings.value', { value: valueLabel }) }];
+});
+
+const servingsUnit = data.servings && `recipe.servingsFor.${data.servings.unit}`;
+const noteParagraphs = data.note?.split(/\n\s*\n/) ?? [];
+
+const courseHref = localizedPath(lang, `menu/${data.course}`);
+const courseLabel = t(`courses.${data.course}`);
+---
+
+<PageLayout
+  lang={lang}
+  title={data.title}
+  description={data.description ?? t('recipe.metaDescription', { title: data.title })}
+  image={ogImage?.src}
+  imageAlt={ogImage && data.imageAlt}
+  type="article"
+>
+  <article class="recipe" lang={isFallback ? contentLang : undefined}>
+    <Stack as="header" gap="md" class="recipe__header">
+      <p class="recipe__breadcrumb" lang={lang} data-print-hidden>
+        <a href={courseHref}>{t('recipe.backToCourse', { course: courseLabel })}</a>
+      </p>
+      {data.draft && <Notice lang={lang}>{t('recipe.draftNotice')}</Notice>}
+      {isFallback && <Notice lang={lang}>{t('recipe.fallbackNotice', { language: t(`recipe.fallbackLanguage.${contentLang}`) })}</Notice>}
+      <h1>{data.title}</h1>
+      {data.description && <p class="recipe__description">{data.description}</p>}
+      <div lang={lang}><TagList tags={tagLabels(recipe, t, locale)} /></div>
+      <Cluster gap="md" justify="between" lang={lang}>
+        <MetaList items={timeItems} />
+        <PrintButton label={t('recipe.print')} />
+      </Cluster>
+    </Stack>
+
+    {
+      data.image && (
+        <figure class="recipe__figure">
+          <Image
+            src={data.image}
+            alt={data.imageAlt ?? ''}
+            widths={[600, 900, 1200]}
+            sizes="(min-width: 72rem) 72rem, 100vw"
+            class="recipe__image"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
+
+    <div class="recipe__body">
+      <Stack gap="xl" class="recipe__aside">
+        <ContentSection id="ingredients" heading={t('recipe.ingredients')} lang={lang}>
+          {
+            data.servings && servingsUnit && (
+              <ServingsScaler
+                target="ingredient-list"
+                servings={data.servings.amount}
+                locale={locale}
+                label={t('recipe.servings')}
+                decreaseLabel={t('recipe.decreaseServings')}
+                increaseLabel={t('recipe.increaseServings')}
+                servingsTemplate={t(servingsUnit)}
+                servingsOneTemplate={t(`${servingsUnit}One`)}
+              />
+            )
+          }
+          <div lang={contentLang}>
+            <IngredientList id="ingredient-list" groups={data.ingredients} locale={locale} />
+          </div>
+        </ContentSection>
+
+        {
+          data.equipment.length > 0 && (
+            <ContentSection id="equipment" heading={t('recipe.equipment')} lang={lang}>
+              <ul class="recipe__equipment" lang={contentLang}>
+                {data.equipment.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </ContentSection>
+          )
+        }
+
+        {
+          ratings.length > 0 && (
+            <ContentSection id="ratings" heading={t('recipe.ratings')} lang={lang} data-print-keep>
+              <RatingList ratings={ratings} />
+            </ContentSection>
+          )
+        }
+      </Stack>
+
+      <Stack gap="xl" class="recipe__main">
+        <ContentSection id="steps" heading={t('recipe.steps')} lang={lang}>
+          <StepList lang={contentLang}>
+            <Content />
+          </StepList>
+        </ContentSection>
+
+        {
+          data.note && (
+            <ContentSection id="note" heading={t('recipe.note')} lang={lang} class="recipe__note" data-print-keep>
+              <div lang={contentLang}>
+                {noteParagraphs.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </ContentSection>
+          )
+        }
+
+        {
+          data.source && (
+            <ContentSection id="source" heading={t('recipe.source')} lang={lang}>
+              <p lang={contentLang}>
+                {data.source.url ? (
+                  <a href={data.source.url} rel="noopener">
+                    {data.source.label}
+                  </a>
+                ) : (
+                  data.source.label
+                )}
+              </p>
+            </ContentSection>
+          )
+        }
+      </Stack>
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  /* Layout of the recipe page: one column on phones, ingredients beside the steps on wider screens. */
+  .recipe {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .recipe__body {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 56rem) {
+    .recipe__body {
+      grid-template-columns: minmax(16rem, 1fr) 2fr;
+      align-items: start;
+    }
+  }
+
+  @media print {
+    .recipe__body {
+      grid-template-columns: 1fr 2fr;
+      gap: var(--space-xl);
+    }
+  }
+
+  /* Appearance */
+  .recipe__breadcrumb {
+    font-size: var(--text-sm);
+  }
+
+  .recipe__description {
+    max-width: var(--reading-width);
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+  }
+
+  .recipe__figure {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
+  }
+
+  .recipe :global(.recipe__image) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .recipe :global(.recipe__aside) {
+    padding: var(--space-lg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  .recipe__equipment {
+    padding-inline-start: var(--space-lg);
+  }
+
+  .recipe :global(.recipe__note) {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
+  }
+
+  .recipe :global(.recipe__note) p + p {
+    margin-top: var(--space-sm);
+  }
+
+  @media print {
+    .recipe :global(.recipe__aside),
+    .recipe :global(.recipe__note) {
+      padding: 0;
+      border: 0;
+    }
+
+    .recipe :global(.recipe__image) {
+      aspect-ratio: auto;
+    }
+  }
+</style>

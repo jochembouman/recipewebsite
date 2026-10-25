@@ -1,0 +1,40 @@
+---
+/** Horizontal group that wraps onto new lines (tags, buttons, meta). Layout only. */
+type Space = '3xs' | '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+interface Props {
+  as?: 'div' | 'ul' | 'ol' | 'dl' | 'nav';
+  gap?: Space;
+  justify?: 'start' | 'between' | 'end' | 'center';
+  align?: 'start' | 'center' | 'end' | 'baseline';
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { as: Tag = 'div', gap = 'xs', justify = 'start', align = 'center', class: className, ...rest } = Astro.props;
+const justifyMap = { start: 'flex-start', between: 'space-between', end: 'flex-end', center: 'center' };
+---
+
+<Tag
+  class:list={['cluster', className]}
+  style={`--cluster-gap: var(--space-${gap}); --cluster-justify: ${justifyMap[justify]}; --cluster-align: ${align}`}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cluster-gap);
+    justify-content: var(--cluster-justify);
+    align-items: var(--cluster-align);
+    margin: 0;
+    padding: 0;
+  }
+
+  .cluster:is(ul, ol) {
+    list-style: none;
+  }
+</style>

@@ -1,0 +1,7 @@
+---
+// The site lives under /nl/ and /en/; the root forwards to the default language.
+// On Vercel, vercel.json already redirects before this page is served.
+import { defaultLang, localizedPath } from '../i18n/utils';
+
+return Astro.redirect(localizedPath(defaultLang));
+---

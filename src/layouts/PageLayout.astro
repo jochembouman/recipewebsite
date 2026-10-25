@@ -1,0 +1,25 @@
+---
+/** BaseLayout plus the standard page width and vertical rhythm. */
+import type { ComponentProps } from 'astro/types';
+import Container from '../components/layout/Container.astro';
+import Stack from '../components/layout/Stack.astro';
+import BaseLayout from './BaseLayout.astro';
+
+type Props = ComponentProps<typeof BaseLayout> & { width?: 'content' | 'reading' };
+
+const { width = 'content', ...layoutProps } = Astro.props;
+---
+
+<BaseLayout {...layoutProps}>
+  <Container width={width} class="page">
+    <Stack gap="2xl">
+      <slot />
+    </Stack>
+  </Container>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+</style>

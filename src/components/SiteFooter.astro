@@ -1,0 +1,27 @@
+---
+import Container from './layout/Container.astro';
+
+interface Props {
+  siteName: string;
+  text: string;
+}
+
+const { siteName, text } = Astro.props;
+---
+
+<footer class="site-footer" data-print-hidden>
+  <Container>
+    <p><strong>{siteName}</strong> · {text}</p>
+  </Container>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-3xl);
+    padding-block: var(--space-xl);
+    border-top: var(--border-width) solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+</style>
